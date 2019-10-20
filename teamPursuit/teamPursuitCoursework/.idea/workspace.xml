@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b3b455d-30ab-4777-9a11-9577d83562a6" name="Default Changelist" comment="" />
+    <list default="true" id="56657b86-8874-45c6-a77e-59c7470c2d00" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -9,14 +9,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectId" id="1RYdb8CPB2YBkLoZEEaU5E9eK39" />
+  <component name="ProjectId" id="1SNS0nkZjgUyHtwFVa6beoD4G7c" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../teamPursuit/teamPursuitCoursework" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ECOProjects/CHeSC Workspace" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -37,13 +37,12 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="SolveTSP" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tspsolver.SolveTSP" />
-      <module name="SearchAlgorithms" />
-      <option name="PROGRAM_PARAMETERS" value="-v -H -mT -f eil51.tsp -i10000 " />
+    <configuration name="EA" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ea.EA" />
+      <module name="teamPursuitCoursework" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="tspsolver.*" />
+          <option name="PATTERN" value="ea.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -53,7 +52,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SolveTSP" />
+        <item itemvalue="Application.EA" />
       </list>
     </recent_temporary>
   </component>
@@ -62,14 +61,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1b3b455d-30ab-4777-9a11-9577d83562a6" name="Default Changelist" comment="" />
-      <created>1569848031234</created>
+      <changelist id="56657b86-8874-45c6-a77e-59c7470c2d00" name="Default Changelist" comment="" />
+      <created>1571402339412</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1569848031234</updated>
-      <workItem from="1569848035281" duration="13672000" />
-      <workItem from="1570624337426" duration="126000" />
-      <workItem from="1571402313217" duration="32000" />
+      <updated>1571402339412</updated>
+      <workItem from="1571402342064" duration="10556000" />
     </task>
     <servers />
   </component>
@@ -81,9 +78,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
