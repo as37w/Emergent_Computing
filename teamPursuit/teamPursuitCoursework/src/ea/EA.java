@@ -48,7 +48,11 @@ public class EA implements Runnable{
 			iteration++;
 			Individual parent1 = tournamentSelection();
 			Individual parent2 = tournamentSelection();
+
+		//	Individual child = multiPointCrossover(parent1, parent2);
 			Individual child = crossover(parent1, parent2);
+		//	Individual child = uniformCrossover(parent1, parent2);
+
 			child = mutate(child);
 			child.evaluate(teamPursuit);
 			replace(child);
@@ -89,34 +93,27 @@ public class EA implements Runnable{
 				child.transitionStrategy[index] = !child.transitionStrategy[index];
 			}
 
-			int soln[] = new int[23];
-
-			for(int i = 0; i < child.pacingStrategy.length; i++){
-				soln[i] = child.pacingStrategy[i];
-			}
-
 			int index = Parameters.rnd.nextInt(child.pacingStrategy.length);
 
-			int rand = 200 + Parameters.rnd.nextInt(1000);
-
-
 			for(int j =0; j < mutationRate; j++){
-					int r = rand;
-					soln[index] = r;
+					int rand = 50 - Parameters.rnd.nextInt(100);
+					if(child.pacingStrategy[index] + rand <= 1200 && child.pacingStrategy[index] + rand >= 200)
+					{
+						child.pacingStrategy[index] = child.pacingStrategy[index] + rand;
+					}
 			}
-
-			child.pacingStrategy = soln;
 
 		return child;
 	}
 
 
 	private Individual crossover(Individual parent1, Individual parent2) {
+
 		if(Parameters.rnd.nextDouble() > Parameters.crossoverProbability){
 			return parent1;
 		}
 		Individual child = new Individual();
-		
+
 		int crossoverPoint1 = Parameters.rnd.nextInt(parent1.transitionStrategy.length);
 		int crossoverPoint2 = Parameters.rnd.nextInt(parent1.pacingStrategy.length);
 
@@ -140,6 +137,91 @@ public class EA implements Runnable{
 
 
 		return child;
+	}
+
+	public Individual uniformCrossover(Individual parent1, Individual parent2){
+		if(Parameters.rnd.nextDouble() > Parameters.crossoverProbability){
+			return parent1;
+		}
+
+
+		Individual child = new Individual();
+
+		for(int i =0; i < parent1.pacingStrategy.length; i++){
+			if(Parameters.rnd.nextInt(2)  == 0){
+				child.pacingStrategy[i] = parent1.pacingStrategy[i];
+			}else{
+				child.pacingStrategy[i] = parent2.pacingStrategy[i];
+			}
+		}
+
+		for(int i =0; i< parent1.transitionStrategy.length; i++){
+			if(Parameters.rnd.nextInt(2) == 0){
+				child.transitionStrategy[i] = parent1.transitionStrategy[i];
+			}else{
+				child.transitionStrategy[i] = parent2.transitionStrategy[i];
+			}
+
+		}
+		return child;
+	}
+
+	public Individual multiPointCrossover(Individual parent1, Individual parent2){
+		if(Parameters.rnd.nextDouble() > Parameters.crossoverProbability){
+			return parent1;
+		}
+
+		Individual child = new Individual();
+
+		int tcrossoverPoint1 = Parameters.rnd.nextInt(parent1.transitionStrategy.length);
+		int tcrossoverPoint2 = Parameters.rnd.nextInt(parent1.transitionStrategy.length);
+
+		int pcrossoverPoint3 = Parameters.rnd.nextInt(parent1.pacingStrategy.length);
+		int pcrossoverPoint4 = Parameters.rnd.nextInt(parent1.pacingStrategy.length);
+
+
+
+
+		if(tcrossoverPoint1 > tcrossoverPoint2){
+			int tmp = tcrossoverPoint1;
+			tcrossoverPoint1 = tcrossoverPoint2;
+			tcrossoverPoint2 = tmp;
+		}
+
+		if(pcrossoverPoint3 > pcrossoverPoint4){
+			int tmp = pcrossoverPoint3;
+			pcrossoverPoint3 = pcrossoverPoint4;
+			pcrossoverPoint4 = tmp;
+		}
+
+
+		for(int i =0; i < tcrossoverPoint1; i++){
+			child.transitionStrategy[i] = parent1.transitionStrategy[i];
+		}
+
+		for(int i = tcrossoverPoint1; i < tcrossoverPoint2; i++){
+			child.transitionStrategy[i] = parent2.transitionStrategy[i];
+		}
+
+		for(int i = tcrossoverPoint2; i < parent1.transitionStrategy.length; i++){
+			child.transitionStrategy[i] = parent1.transitionStrategy[i];
+		}
+
+
+		for(int i =0; i < pcrossoverPoint3; i++){
+			child.pacingStrategy[i] = parent1.pacingStrategy[i];
+		}
+
+		for(int i = pcrossoverPoint3; i < pcrossoverPoint4; i++){
+			child.pacingStrategy[i] = parent2.pacingStrategy[i];
+		}
+
+		for(int i = pcrossoverPoint4; i < parent1.pacingStrategy.length; i++){
+			child.pacingStrategy[i] = parent1.pacingStrategy[i];
+		}
+
+		return child;
+
 	}
 
 
