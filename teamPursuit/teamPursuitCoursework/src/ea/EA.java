@@ -19,6 +19,7 @@ package ea;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.sun.corba.se.impl.util.Utility;
 import teamPursuit.TeamPursuit;
 import teamPursuit.WomensTeamPursuit;
 
@@ -34,33 +35,49 @@ public class EA implements Runnable{
 		
 	}
 
-	
+
 	public static void main(String[] args) {
 		EA ea = new EA();
 		ea.run();
 	}
 
 	public void run() {
-		initialisePopulation();	
-		System.out.println("finished init pop");
+
+		long t= System.currentTimeMillis();
+
+		long end = t+ 300000;
+
+		while(System.currentTimeMillis() < end) {
+
+		initialisePopulation();
+		ArrayList<Individual> aPopulation = population;
+		//System.out.println("finished init pop");
 		iteration = 0;
-		while(iteration < Parameters.maxIterations){
+		//while(iteration < Parameters.maxIterations) {
 			iteration++;
 			Individual parent1 = tournamentSelection();
 			Individual parent2 = tournamentSelection();
+			//	Individual parent1 =rouletteWheelSelection(population);
+			//	Individual parent2 = rouletteWheelSelection(population);
 
-		//	Individual child = multiPointCrossover(parent1, parent2);
-			Individual child = crossover(parent1, parent2);
-		//	Individual child = uniformCrossover(parent1, parent2);
+				Individual child = multiPointCrossover(parent1, parent2);
+			//	Individual child = crossover(parent1, parent2);
+			//Individual child = uniformCrossover(parent1, parent2);
 
-			child = mutate(child);
+
+			//	child = creepMutate(child);
+			child = scrambleMutation(child);
+			//	 hillClimber(child);
+
+
 			child.evaluate(teamPursuit);
 			replace(child);
 			printStats();
-		}						
+		}
+		//}
 		Individual best = getBest(population);
 		best.print();
-		
+
 	}
 
 	private void printStats() {		
@@ -77,7 +94,7 @@ public class EA implements Runnable{
 	}
 
 
-	private Individual mutate(Individual child) {
+	private Individual creepMutate(Individual child) {
 		if(Parameters.rnd.nextDouble() > Parameters.mutationProbability){
 			return child;
 		}
@@ -93,10 +110,11 @@ public class EA implements Runnable{
 				child.transitionStrategy[index] = !child.transitionStrategy[index];
 			}
 
-			int index = Parameters.rnd.nextInt(child.pacingStrategy.length);
+
 
 			for(int j =0; j < mutationRate; j++){
 					int rand = 50 - Parameters.rnd.nextInt(100);
+					int index = Parameters.rnd.nextInt(child.pacingStrategy.length);
 					if(child.pacingStrategy[index] + rand <= 1200 && child.pacingStrategy[index] + rand >= 200)
 					{
 						child.pacingStrategy[index] = child.pacingStrategy[index] + rand;
@@ -104,6 +122,51 @@ public class EA implements Runnable{
 			}
 
 		return child;
+	}
+
+	private Individual scrambleMutation(Individual child){
+
+
+
+		int mutationRate = 1 + Parameters.rnd.nextInt(Parameters.mutationRateMax);
+
+		//mutate the transition strategy by flipping boolean value
+		for(int i = 0; i < mutationRate; i++){
+			int index = Parameters.rnd.nextInt(child.transitionStrategy.length);
+			child.transitionStrategy[index] = !child.transitionStrategy[index];
+		}
+
+		int[] array = child.pacingStrategy;
+		int arrayLength = array.length;
+	for(int i = 0; i < 5; i++){
+		int value1 = Parameters.rnd.nextInt(child.pacingStrategy.length);
+		int value2 = Parameters.rnd.nextInt(child.pacingStrategy.length);
+
+		while(value1 >= value2){
+			value1 = Parameters.rnd.nextInt(child.pacingStrategy.length);
+			value2 = Parameters.rnd.nextInt(child.pacingStrategy.length);
+		}
+
+		for(int j = 0; j < 23; j++){
+			int selectedVal1 = randomNumber(value1, value2+1);
+			int selctedVal2 = randomNumber(value1, value2+1);
+
+			int a = child.pacingStrategy[selectedVal1];
+			child.pacingStrategy[selectedVal1] = child.pacingStrategy[selctedVal2];
+			child.pacingStrategy[selctedVal2] = a;
+		}
+
+		for(int j =0; j < mutationRate; j++){
+			int rand = 25 - Parameters.rnd.nextInt(50);
+			int index = Parameters.rnd.nextInt(child.pacingStrategy.length);
+			if(child.pacingStrategy[index] + rand <= 1200 && child.pacingStrategy[index] + rand >= 200)
+			{
+				child.pacingStrategy[index] = child.pacingStrategy[index] + rand;
+			}
+		}
+
+	}
+	return child;
 	}
 
 
@@ -237,6 +300,62 @@ public class EA implements Runnable{
 		return getBest(candidates).copy();
 	}
 
+	private Individual rouletteWheelSelection(ArrayList<Individual> aPopulation){
+
+
+		ArrayList<Individual> newPopulation = new ArrayList<Individual>();
+
+		Individual parent = new Individual();
+		double totalFitness = 0.00;
+
+		for(int i = 0; i < Parameters.popSize; i++){
+			Individual currentIndividual = aPopulation.get(i);
+			totalFitness += currentIndividual.getFitness();
+		}
+
+		for(Individual individual : aPopulation){
+			double randomFitness = Parameters.rnd.nextDouble() * totalFitness;
+
+			double currentSum = 0;
+			int index = 0;
+			int lastAddedIndex = 0;
+
+			while(currentSum < randomFitness){
+				currentSum = currentSum + aPopulation.get(index).getFitness();
+				lastAddedIndex = index;
+				index++;
+			}
+
+			 parent =  aPopulation.get(lastAddedIndex);
+		}
+
+
+
+		return parent;
+	}
+
+	private Individual hillClimber(Individual child){
+		double oldFitness = child.getFitness();
+		creepMutate(child);
+		double newFitness = child.getFitness();
+
+		while (newFitness < oldFitness)
+		{
+			creepMutate(child);
+		}
+
+		return child;
+
+
+
+	}
+
+
+	public int randomNumber(int min , int max) {
+		Random r = new Random();
+		double d = min + r.nextDouble() * (max - min);
+		return (int)d;
+	}
 
 	private Individual getBest(ArrayList<Individual> aPopulation) {
 		double bestFitness = Double.MAX_VALUE;

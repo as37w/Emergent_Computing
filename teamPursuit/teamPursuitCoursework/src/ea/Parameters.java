@@ -17,11 +17,11 @@ public class Parameters {
 	public static int popSize = 20;
 	public static int tournamentSize = 6;
 	
-	public static int mutationRateMax = 12;//out of len
-	public static double mutationProbability = 0.7;
-	public static double crossoverProbability = 0.8;
+	public static int mutationRateMax = 5;//out of len
+	public static double mutationProbability = 0.6;
+	public static double crossoverProbability = 0.6;
 	
-	public static int maxIterations = 1000;
+	public static int maxIterations = 2000;
 	
 	
 }
