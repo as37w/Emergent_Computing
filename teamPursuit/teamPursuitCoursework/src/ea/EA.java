@@ -16,10 +16,10 @@ package ea;
  */
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
-
-import com.sun.corba.se.impl.util.Utility;
 import teamPursuit.TeamPursuit;
 import teamPursuit.WomensTeamPursuit;
 
@@ -30,6 +30,7 @@ public class EA implements Runnable{
 	
 	private ArrayList<Individual> population = new ArrayList<Individual>();
 	private int iteration = 0;
+
 	
 	public EA() {
 		
@@ -37,48 +38,49 @@ public class EA implements Runnable{
 
 
 	public static void main(String[] args) {
-		EA ea = new EA();
-		ea.run();
+		int no_of_runs = 0;
+		while(no_of_runs != 10)
+		{
+			EA ea = new EA();
+			ea.run();
+			no_of_runs++;
+		}
+
 	}
 
 	public void run() {
-
-		long t= System.currentTimeMillis();
-
-		long end = t+ 300000;
-
-		while(System.currentTimeMillis() < end) {
-
 		initialisePopulation();
+		int no_of_runs = 0;
 		ArrayList<Individual> aPopulation = population;
-		//System.out.println("finished init pop");
+		System.out.println("finished init pop");
 		iteration = 0;
-		//while(iteration < Parameters.maxIterations) {
+
+		while(iteration < Parameters.maxIterations) {
 			iteration++;
 			Individual parent1 = tournamentSelection();
 			Individual parent2 = tournamentSelection();
-			//	Individual parent1 =rouletteWheelSelection(population);
-			//	Individual parent2 = rouletteWheelSelection(population);
+			//Individual parent1 =rouletteWheelSelection(population);
+			///Individual parent2 = rouletteWheelSelection(population);
 
-				Individual child = multiPointCrossover(parent1, parent2);
+			//	Individual child = multiPointCrossover(parent1, parent2);
 			//	Individual child = crossover(parent1, parent2);
-			//Individual child = uniformCrossover(parent1, parent2);
+				Individual child = uniformCrossover(parent1, parent2);
 
 
 			//	child = creepMutate(child);
 			child = scrambleMutation(child);
-			//	 hillClimber(child);
+				 //hillClimber(child);
 
 
 			child.evaluate(teamPursuit);
 			replace(child);
-			printStats();
 		}
-		//}
 		Individual best = getBest(population);
 		best.print();
 
-	}
+
+
+		}
 
 	private void printStats() {		
 		System.out.println("" + iteration + " Best: " + getBest(population) + " Worst: " + getWorst(population));
@@ -93,6 +95,9 @@ public class EA implements Runnable{
 		}
 	}
 
+	public static double findAverageUsingStream(int[] array) {
+		return Arrays.stream(array).average().orElse(Double.NaN);
+	}
 
 	private Individual creepMutate(Individual child) {
 		if(Parameters.rnd.nextDouble() > Parameters.mutationProbability){
